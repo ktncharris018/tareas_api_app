@@ -4,12 +4,12 @@ import 'package:logger/logger.dart';
 import '../models/task_model.dart';
 
 class ApiService {
-  //final String baseUrl = 'https://nk0blh78-8000.use2.devtunnels.ms';
+  //final String baseUrl = 'https://nk0blh78-8000.use2.devtunnels.ms';  /// API del profesor
   //final String baseUrl = 'https://x8ki-letl-twmt.n7.xano.io/api:wka2okkc';
-  final String baseUrl = 'https://x8ki-letl-twmt.n7.xano.io/api:UIdqgh6f';
+  final String baseUrl = 'https://x8ki-letl-twmt.n7.xano.io/api:UIdqgh6f';  /// API personal
   final Logger logger = Logger();
 
-  // Obtener todas las tareas
+ 
   Future<List<TaskModel>> getTasks() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/tareas'));
@@ -29,7 +29,7 @@ class ApiService {
     }
   }
 
-  // Obtener una tarea por ID
+  
   Future<TaskModel> getTaskById(int id) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/tareas/$id'));
@@ -48,7 +48,7 @@ class ApiService {
     }
   }
 
-  // Crear una nueva tarea
+
   Future<TaskModel> createTask(TaskModel task) async {
     try {
       final response = await http.post(
@@ -71,7 +71,7 @@ class ApiService {
     }
   }
 
-  // Actualizar una tarea
+
   Future<TaskModel> updateTask(int id, TaskModel task) async {
     try {
       final response = await http.put(
@@ -94,7 +94,7 @@ class ApiService {
     }
   }
 
-  // Eliminar una tarea
+  
   Future<void> deleteTask(int id) async {
     try {
       final response = await http.delete(Uri.parse('$baseUrl/tareas/$id'));

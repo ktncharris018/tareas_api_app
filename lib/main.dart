@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'utils/routes.dart'; // Archivo donde defines las rutas
+import 'utils/routes.dart'; 
 
 void main() {
   runApp(MyApp());
@@ -13,9 +13,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Gestor de Tareas',
       initialRoute: AppRoutes.HOME, // Ruta inicial de la app
-      getPages: AppRoutes.routes, // Definición de rutas en routes.dart
+      getPages: AppRoutes.routes, 
       theme: ThemeData(
-        primarySwatch: Colors.blue, // Tema de la app (puedes personalizarlo)
+        primarySwatch: Colors.blue, 
       ),
     );
   }

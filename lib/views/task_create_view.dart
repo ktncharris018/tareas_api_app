@@ -10,57 +10,107 @@ class CreateTaskView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Agregar Nueva Tarea')),
+      appBar: AppBar(
+        title: const Text('Agregar Nueva Tarea'),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: controller.nameController,
-              decoration: InputDecoration(
-                labelText: 'Nombre',
-                prefixIcon: Icon(Icons.title),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: controller.detailsController,
-              decoration: InputDecoration(
-                labelText: 'Detalles',
-                prefixIcon: Icon(Icons.description),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
+            _buildTextField(controller.nameController, 'Nombre', Icons.title),
+            const SizedBox(height: 16),
+            _buildTextField(controller.detailsController, 'Detalles', Icons.description, maxLines: 3),
+            const SizedBox(height: 16),
             Obx(
-              () => DropdownButtonFormField<String>(
-                value: controller.selectedStatus.value,
-                items:
-                    ['Pendiente', 'Completada', 'En progreso']
-                        .map(
-                          (status) => DropdownMenuItem(
-                            value: status,
-                            child: Text(status),
-                          ),
-                        )
-                        .toList(),
-                onChanged: (value) => controller.selectedStatus.value = value!,
-                decoration: InputDecoration(
-                  labelText: 'Estado',
-                  prefixIcon: Icon(Icons.check_circle),
-                  border: OutlineInputBorder(),
+              () => _buildDropdown(
+                'Estado', 
+                Icons.check_circle, 
+                controller.selectedStatus.value, 
+                (value) => controller.selectedStatus.value = value!,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: controller.validateAndSave,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightGreen, 
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4, // Sombra suave
+                ),
+                icon: const Icon(Icons.save, color: Colors.black), 
+                label: const Text(
+                  'Guardar Tarea',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ),
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: controller.validateAndSave,
-              child: Text('Guardar Tarea'),
             ),
           ],
         ),
       ),
+    );
+  }
+
+ 
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {int maxLines = 1}) {
+    return Container(
+      decoration: _boxDecoration(),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        decoration: _inputDecoration(label, icon),
+      ),
+    );
+  }
+
+  
+  Widget _buildDropdown(String label, IconData icon, String value, Function(String?) onChanged) {
+    return Container(
+      decoration: _boxDecoration(),
+      child: DropdownButtonFormField<String>(
+        value: value,
+        items: ['pendiente', 'completado', 'en progreso']
+            .map((status) => DropdownMenuItem(
+                  value: status,
+                  child: Text(status.capitalizeFirst!),
+                ))
+            .toList(),
+        onChanged: onChanged,
+        decoration: _inputDecoration(label, icon),
+      ),
+    );
+  }
+
+  
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon, color: Colors.blueAccent),
+      border: InputBorder.none, // Sin bordes visibles
+      filled: true,
+      fillColor: Colors.white.withOpacity(0.9),
+    );
+  }
+
+  
+  BoxDecoration _boxDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1), 
+          blurRadius: 8, 
+          offset: const Offset(2, 4),
+        ),
+      ],
     );
   }
 }

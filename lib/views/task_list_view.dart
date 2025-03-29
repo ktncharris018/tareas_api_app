@@ -10,27 +10,46 @@ class TaskListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Tareas'),
+        title: Text('Lista de Tareas', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
+        backgroundColor: Colors.blueAccent,
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (controller.tasks.isEmpty) {
-          return Center(child: Text('No hay tareas disponibles'));
-        }
-        return ListView.builder(
-          itemCount: controller.tasks.length,
-          itemBuilder: (context, index) {
-            final task = controller.tasks[index];
-            return TaskCard(task: task, controller: controller);
-          },
-        );
-      }),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Buscar tarea...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onChanged: (value) => controller.filterTasks(value),
+            ),
+          ),
+          Expanded(
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (controller.filteredTasks.isEmpty) {
+                return Center(child: Text('No hay tareas disponibles'));
+              }
+              return ListView.builder(
+                itemCount: controller.filteredTasks.length,
+                itemBuilder: (context, index) {
+                  final task = controller.filteredTasks[index];
+                  return TaskCard(task: task, controller: controller);
+                },
+              );
+            }),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: controller.goToCreateTask,
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }
@@ -46,10 +65,10 @@ class TaskCard extends StatelessWidget {
     switch (status) {
       case 'pendiente':
         return Colors.orange;
-      case 'completada':
+      case 'en progreso':
+        return Colors.amber;
+      case 'completado':
         return Colors.green;
-      case 'en_progreso':
-        return Colors.blue;
       default:
         return Colors.grey;
     }
@@ -59,16 +78,26 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         title: Text(task.nombre, style: TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(task.detalle),
         trailing: IconButton(
           icon: Icon(Icons.close, color: Colors.red),
+          //icon: Icon(LucideIcons.x, color: Colors.red),
           onPressed: () {
             if (task.id != null) {
-              controller.deleteTask(task.id!); // Forzamos a no nulo con `!`
+              controller.deleteTask(task.id!);
             } else {
-              Get.snackbar('Error', 'No se puede eliminar una tarea sin ID');
+              Get.snackbar(
+                'Error',
+                'No se puede eliminar una tarea sin ID',
+                backgroundColor: Colors.redAccent,
+                colorText: Colors.white,
+                icon: Icon(Icons.error, color: Colors.white),
+                snackPosition: SnackPosition.BOTTOM,
+              );
             }
           },
         ),

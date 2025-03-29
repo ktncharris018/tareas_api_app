@@ -9,7 +9,7 @@ class TaskEditController extends GetxController {
   late TextEditingController nameController;
   late TextEditingController detailsController;
   var selectedStatus = ''.obs;
-  late int taskId; // ID de la tarea que se está editando
+  late int taskId; 
 
   @override
   void onInit() {
@@ -23,7 +23,14 @@ class TaskEditController extends GetxController {
 
   Future<void> updateTask() async {
     if (nameController.text.isEmpty || detailsController.text.isEmpty) {
-      Get.snackbar('Error', 'Todos los campos son obligatorios');
+      Get.snackbar(
+        'Error', 
+        'Todos los campos son obligatorios',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+        icon: Icon(Icons.error, color: Colors.white),
+        snackPosition: SnackPosition.TOP,
+      );
       return;
     }
 
@@ -38,9 +45,16 @@ class TaskEditController extends GetxController {
       await apiService.updateTask(taskId, updatedTask);
       Get.find<TaskListController>().fetchTasks(); // Actualizar la lista
       Get.back(); // Cerrar vista de edición
-      Get.snackbar('Éxito', 'Tarea actualizada correctamente');
+      Get.snackbar(
+        'Éxito', 
+        'Tarea actualizada correctamente',
+          backgroundColor: const Color.fromARGB(255, 106, 231, 113),
+          colorText: Colors.black,
+          icon: Icon(Icons.check_circle, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+);
     } catch (e) {
-      Get.snackbar('Error', 'No se pudo actualizar la tarea');
+      Get.snackbar('Error', 'No se pudo actualizar la tarea: $e');
     }
   }
 }
